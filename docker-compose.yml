@@ -1,0 +1,24 @@
+# Levanta solo una base de datos PostgreSQL para desarrollo.
+# Requiere Docker Desktop instalado. Si no lo tienes, puedes ignorar este
+# archivo y usar SQLite (ver README) o instalar PostgreSQL directamente.
+#
+#   docker compose up -d      # arranca la base de datos
+#   docker compose down       # la detiene
+#
+# Luego pon en tu .env:
+#   DATABASE_URL=postgresql+psycopg://finance:finance@localhost:5432/finance_db
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: finance
+      POSTGRES_PASSWORD: finance
+      POSTGRES_DB: finance_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

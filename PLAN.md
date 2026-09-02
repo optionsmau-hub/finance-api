@@ -1,0 +1,66 @@
+# Plan de desarrollo
+
+La idea es construir el proyecto por **etapas cortas**. Cada etapa es una rama +
+Pull Request en GitHub, para que tu historial muestre cómo trabajas.
+
+---
+
+## Etapa 0 — Esqueleto (HECHO)
+
+- [x] Estructura de carpetas por capas (core / db / models / schemas / crud / api)
+- [x] FastAPI corriendo con endpoint `/health`
+- [x] Conexión a base de datos con SQLAlchemy 2.0
+- [x] Migraciones con Alembic (`0001_initial`)
+- [x] CRUD completo del recurso `Category`
+- [x] Tests con pytest (SQLite en memoria)
+- [x] CI en GitHub Actions (lint + tests)
+
+## Etapa 1 — Transacciones (ingresos y gastos)
+
+- [ ] Modelo `Transaction`: monto, tipo (ingreso/gasto), fecha, nota, `category_id` (FK)
+- [ ] Relación `Category` 1—N `Transaction`
+- [ ] Migración nueva: `alembic revision --autogenerate -m "add transactions"`
+- [ ] Schemas + CRUD + router `/api/v1/transactions`
+- [ ] Filtros por rango de fechas, categoría y tipo
+- [ ] Validación: monto > 0
+- [ ] Tests de cada caso
+
+## Etapa 2 — Usuarios y autenticación (JWT)
+
+- [ ] Modelo `User` con contraseña hasheada (passlib / bcrypt o argon2)
+- [ ] `POST /auth/register` y `POST /auth/login` (devuelve access token)
+- [ ] Dependencia `get_current_user` en `app/api/deps.py`
+- [ ] Cada transacción y categoría pertenece a un usuario (`owner_id`)
+- [ ] Proteger los endpoints: cada quien ve solo lo suyo
+- [ ] Tests de autorización (401 / 403)
+
+## Etapa 3 — Presupuestos y reportes
+
+- [ ] Modelo `Budget`: límite mensual por categoría
+- [ ] `GET /api/v1/reports/summary?month=YYYY-MM`: total ingresos, gastos, balance
+- [ ] `GET /api/v1/reports/by-category`: gasto agrupado por categoría
+- [ ] Alerta cuando el gasto supera el presupuesto
+
+## Etapa 4 — Calidad y empaquetado
+
+- [ ] `pre-commit` con ruff (formato + lint automáticos)
+- [ ] Cobertura de tests con `pytest-cov` (objetivo: > 85 %)
+- [ ] `Dockerfile` de la aplicación + `docker-compose` con app + db
+- [ ] Manejo de errores centralizado y logging
+- [ ] Paginación consistente en todos los listados
+
+## Etapa 5 — Despliegue
+
+- [ ] Desplegar en Render / Railway / Fly.io (capa gratuita)
+- [ ] Variables de entorno de producción
+- [ ] Badge de CI y enlace a la demo en el README
+
+---
+
+### Ideas para practicar más adelante
+
+- Exportar movimientos a CSV
+- Soporte multi-moneda con tipo de cambio
+- Transacciones recurrentes (suscripciones)
+- Rate limiting
+- Websocket para notificaciones de presupuesto

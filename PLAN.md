@@ -15,15 +15,16 @@ Pull Request en GitHub, para que tu historial muestre cómo trabajas.
 - [x] Tests con pytest (SQLite en memoria)
 - [x] CI en GitHub Actions (lint + tests)
 
-## Etapa 1 — Transacciones (ingresos y gastos)
+## Etapa 1 — Transacciones (ingresos y gastos) (HECHO)
 
-- [ ] Modelo `Transaction`: monto, tipo (ingreso/gasto), fecha, nota, `category_id` (FK)
-- [ ] Relación `Category` 1—N `Transaction`
-- [ ] Migración nueva: `alembic revision --autogenerate -m "add transactions"`
-- [ ] Schemas + CRUD + router `/api/v1/transactions`
-- [ ] Filtros por rango de fechas, categoría y tipo
-- [ ] Validación: monto > 0
-- [ ] Tests de cada caso
+- [x] Modelo `Transaction`: monto, tipo (ingreso/gasto), fecha, nota, `category_id` (FK)
+- [x] Relación `Category` 1—N `Transaction` (FK con `ON DELETE RESTRICT`)
+- [x] Migración `0002_add_transactions`
+- [x] Schemas + CRUD + router `/api/v1/transactions`
+- [x] Filtros por rango de fechas, categoría y tipo
+- [x] Validación: monto > 0 (`Decimal`, nunca `float`)
+- [x] No se puede borrar una categoría con movimientos (409)
+- [x] 14 tests nuevos (22 en total)
 
 ## Etapa 2 — Usuarios y autenticación (JWT)
 

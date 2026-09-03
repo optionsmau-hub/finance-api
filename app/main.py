@@ -8,7 +8,7 @@ Documentacion interactiva: http://localhost:8000/docs
 
 from fastapi import FastAPI
 
-from app.api.routes import categories
+from app.api.routes import categories, transactions
 from app.core.config import settings
 
 app = FastAPI(
@@ -18,6 +18,7 @@ app = FastAPI(
 )
 
 app.include_router(categories.router, prefix="/api/v1")
+app.include_router(transactions.router, prefix="/api/v1")
 
 
 @app.get("/health", tags=["meta"])

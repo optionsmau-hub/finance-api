@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
 from app.crud import category as crud
+from app.crud import transaction as transaction_crud
 from app.schemas.category import CategoryCreate, CategoryRead, CategoryUpdate
 
 router = APIRouter(prefix="/categories", tags=["categories"])
@@ -46,4 +47,9 @@ def delete_category(category_id: int, db: Session = Depends(get_db)):
     category = crud.get(db, category_id)
     if category is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Categoria no encontrada")
+    if transaction_crud.exists_for_category(db, category_id):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="No se puede borrar una categoria que tiene movimientos asociados",
+        )
     crud.delete(db, category)

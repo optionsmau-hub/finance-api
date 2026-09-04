@@ -1,4 +1,8 @@
-"""Operaciones de base de datos para Transaccion (capa CRUD)."""
+"""Operaciones de base de datos para Transaccion (capa CRUD).
+
+Todas las consultas filtran por `owner_id`: un usuario nunca ve ni modifica
+movimientos de otro, aunque adivine el id.
+"""
 
 from datetime import date
 
@@ -9,12 +13,16 @@ from app.models.transaction import Transaction, TransactionType
 from app.schemas.transaction import TransactionCreate, TransactionUpdate
 
 
-def get(db: Session, transaction_id: int) -> Transaction | None:
-    return db.get(Transaction, transaction_id)
+def get(db: Session, transaction_id: int, owner_id: int) -> Transaction | None:
+    stmt = select(Transaction).where(
+        Transaction.id == transaction_id, Transaction.owner_id == owner_id
+    )
+    return db.scalar(stmt)
 
 
 def list_(
     db: Session,
+    owner_id: int,
     *,
     category_id: int | None = None,
     type: TransactionType | None = None,
@@ -23,8 +31,8 @@ def list_(
     skip: int = 0,
     limit: int = 100,
 ) -> list[Transaction]:
-    """Lista movimientos, del mas reciente al mas antiguo, con filtros opcionales."""
-    stmt = select(Transaction)
+    """Lista movimientos del usuario, del mas reciente al mas antiguo."""
+    stmt = select(Transaction).where(Transaction.owner_id == owner_id)
 
     if category_id is not None:
         stmt = stmt.where(Transaction.category_id == category_id)
@@ -40,13 +48,17 @@ def list_(
     return list(db.scalars(stmt))
 
 
-def exists_for_category(db: Session, category_id: int) -> bool:
-    stmt = select(Transaction.id).where(Transaction.category_id == category_id).limit(1)
+def exists_for_category(db: Session, category_id: int, owner_id: int) -> bool:
+    stmt = (
+        select(Transaction.id)
+        .where(Transaction.category_id == category_id, Transaction.owner_id == owner_id)
+        .limit(1)
+    )
     return db.scalar(stmt) is not None
 
 
-def create(db: Session, data: TransactionCreate) -> Transaction:
-    transaction = Transaction(**data.model_dump())
+def create(db: Session, data: TransactionCreate, owner_id: int) -> Transaction:
+    transaction = Transaction(**data.model_dump(), owner_id=owner_id)
     db.add(transaction)
     db.commit()
     db.refresh(transaction)

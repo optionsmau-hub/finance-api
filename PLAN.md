@@ -26,14 +26,17 @@ Pull Request en GitHub, para que tu historial muestre cómo trabajas.
 - [x] No se puede borrar una categoría con movimientos (409)
 - [x] 14 tests nuevos (22 en total)
 
-## Etapa 2 — Usuarios y autenticación (JWT)
+## Etapa 2 — Usuarios y autenticación (JWT) (HECHO)
 
-- [ ] Modelo `User` con contraseña hasheada (passlib / bcrypt o argon2)
-- [ ] `POST /auth/register` y `POST /auth/login` (devuelve access token)
-- [ ] Dependencia `get_current_user` en `app/api/deps.py`
-- [ ] Cada transacción y categoría pertenece a un usuario (`owner_id`)
-- [ ] Proteger los endpoints: cada quien ve solo lo suyo
-- [ ] Tests de autorización (401 / 403)
+- [x] Modelo `User` con contraseña hasheada (bcrypt)
+- [x] `POST /api/v1/auth/register` y `POST /api/v1/auth/login` (devuelve access token JWT)
+- [x] Dependencia `get_current_user` en `app/api/deps.py`
+- [x] Cada categoría y transacción pertenece a un usuario (`owner_id`, FK `RESTRICT`)
+- [x] Categorías y transacciones protegidas: cada quien ve y modifica solo lo suyo (404, no 403,
+      si intenta acceder a algo de otro usuario)
+- [x] Nombre de categoría único por usuario, no global
+- [x] Migración `0003_add_users_and_owner_id`
+- [x] 11 tests nuevos (33 en total)
 
 ## Etapa 3 — Presupuestos y reportes
 

@@ -46,6 +46,11 @@ class Transaction(Base):
         ForeignKey("categories.id", ondelete="RESTRICT"), index=True
     )
 
+    # Se guarda tambien aqui (y no solo en la categoria) para poder filtrar
+    # "dame todos los movimientos de este usuario" con una sola condicion,
+    # sin tener que unir con la tabla de categorias.
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="RESTRICT"), index=True)
+
     # Fecha/hora en que se registro la fila (la pone la base de datos).
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 

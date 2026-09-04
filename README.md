@@ -13,6 +13,7 @@ Proyecto de portafolio enfocado en buenas prácticas de backend con Python.
 | ORM | SQLAlchemy 2.0 |
 | Migraciones | Alembic |
 | Validación | Pydantic v2 |
+| Autenticación | JWT (PyJWT) + contraseñas con bcrypt |
 | Base de datos | PostgreSQL (SQLite para desarrollo rápido) |
 | Tests | pytest |
 | Lint / formato | Ruff |
@@ -46,6 +47,19 @@ uvicorn app.main:app --reload
 ```
 
 Abre la documentación interactiva en <http://localhost:8000/docs>.
+
+### Autenticación
+
+La API requiere estar logueado para usar categorías y transacciones:
+
+1. `POST /api/v1/auth/register` con `{"email": "...", "password": "..."}`.
+2. `POST /api/v1/auth/login` (formulario, no JSON) con `username` = tu email y `password`.
+   Devuelve un `access_token`.
+3. Mandas ese token en cada petición: header `Authorization: Bearer <token>`.
+
+En `/docs` hay un botón **Authorize** arriba a la derecha: pega ahí el token (sin
+la palabra `Bearer`) y todos los endpoints protegidos quedan autenticados automáticamente
+para probarlos desde el navegador.
 
 ### Usar PostgreSQL en lugar de SQLite
 
@@ -91,19 +105,21 @@ tests/         Tests con pytest
 
 ## Endpoints actuales
 
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/health` | Estado del servicio |
-| GET | `/api/v1/categories` | Listar categorías |
-| POST | `/api/v1/categories` | Crear categoría |
-| GET | `/api/v1/categories/{id}` | Obtener una categoría |
-| PATCH | `/api/v1/categories/{id}` | Actualizar una categoría |
-| DELETE | `/api/v1/categories/{id}` | Eliminar una categoría (409 si tiene movimientos) |
-| GET | `/api/v1/transactions` | Listar movimientos (filtros: `category_id`, `type`, `date_from`, `date_to`) |
-| POST | `/api/v1/transactions` | Registrar un ingreso o gasto |
-| GET | `/api/v1/transactions/{id}` | Obtener un movimiento |
-| PATCH | `/api/v1/transactions/{id}` | Actualizar un movimiento |
-| DELETE | `/api/v1/transactions/{id}` | Eliminar un movimiento |
+| Método | Ruta | Descripción | Requiere token |
+|--------|------|-------------|:---:|
+| GET | `/health` | Estado del servicio | No |
+| POST | `/api/v1/auth/register` | Crear una cuenta | No |
+| POST | `/api/v1/auth/login` | Iniciar sesión, devuelve un token | No |
+| GET | `/api/v1/categories` | Listar categorías | Sí |
+| POST | `/api/v1/categories` | Crear categoría | Sí |
+| GET | `/api/v1/categories/{id}` | Obtener una categoría | Sí |
+| PATCH | `/api/v1/categories/{id}` | Actualizar una categoría | Sí |
+| DELETE | `/api/v1/categories/{id}` | Eliminar una categoría (409 si tiene movimientos) | Sí |
+| GET | `/api/v1/transactions` | Listar movimientos (filtros: `category_id`, `type`, `date_from`, `date_to`) | Sí |
+| POST | `/api/v1/transactions` | Registrar un ingreso o gasto | Sí |
+| GET | `/api/v1/transactions/{id}` | Obtener un movimiento | Sí |
+| PATCH | `/api/v1/transactions/{id}` | Actualizar un movimiento | Sí |
+| DELETE | `/api/v1/transactions/{id}` | Eliminar un movimiento | Sí |
 
 ## Roadmap
 

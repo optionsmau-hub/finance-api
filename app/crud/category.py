@@ -1,7 +1,7 @@
 """Operaciones de base de datos para Categoria (capa CRUD).
 
-Mantener las consultas aqui deja los endpoints limpios y hace el codigo
-facil de testear sin levantar la API.
+Todas las consultas filtran por `owner_id`: un usuario nunca ve ni modifica
+categorias de otro, aunque adivine el id.
 """
 
 from sqlalchemy import select
@@ -11,21 +11,29 @@ from app.models.category import Category
 from app.schemas.category import CategoryCreate, CategoryUpdate
 
 
-def get(db: Session, category_id: int) -> Category | None:
-    return db.get(Category, category_id)
+def get(db: Session, category_id: int, owner_id: int) -> Category | None:
+    stmt = select(Category).where(Category.id == category_id, Category.owner_id == owner_id)
+    return db.scalar(stmt)
 
 
-def get_by_name(db: Session, name: str) -> Category | None:
-    return db.scalar(select(Category).where(Category.name == name))
+def get_by_name(db: Session, name: str, owner_id: int) -> Category | None:
+    stmt = select(Category).where(Category.name == name, Category.owner_id == owner_id)
+    return db.scalar(stmt)
 
 
-def list_all(db: Session, skip: int = 0, limit: int = 100) -> list[Category]:
-    stmt = select(Category).order_by(Category.id).offset(skip).limit(limit)
+def list_all(db: Session, owner_id: int, skip: int = 0, limit: int = 100) -> list[Category]:
+    stmt = (
+        select(Category)
+        .where(Category.owner_id == owner_id)
+        .order_by(Category.id)
+        .offset(skip)
+        .limit(limit)
+    )
     return list(db.scalars(stmt))
 
 
-def create(db: Session, data: CategoryCreate) -> Category:
-    category = Category(**data.model_dump())
+def create(db: Session, data: CategoryCreate, owner_id: int) -> Category:
+    category = Category(**data.model_dump(), owner_id=owner_id)
     db.add(category)
     db.commit()
     db.refresh(category)

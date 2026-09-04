@@ -14,6 +14,7 @@ Proyecto de portafolio enfocado en buenas prácticas de backend con Python.
 | Migraciones | Alembic |
 | Validación | Pydantic v2 |
 | Autenticación | JWT (PyJWT) + contraseñas con bcrypt |
+| Presupuestos y reportes | Agregaciones SQL (`SUM` / `GROUP BY`) |
 | Base de datos | PostgreSQL (SQLite para desarrollo rápido) |
 | Tests | pytest |
 | Lint / formato | Ruff |
@@ -120,6 +121,14 @@ tests/         Tests con pytest
 | GET | `/api/v1/transactions/{id}` | Obtener un movimiento | Sí |
 | PATCH | `/api/v1/transactions/{id}` | Actualizar un movimiento | Sí |
 | DELETE | `/api/v1/transactions/{id}` | Eliminar un movimiento | Sí |
+| GET | `/api/v1/budgets` | Listar presupuestos (filtro: `month`) | Sí |
+| POST | `/api/v1/budgets` | Crear un presupuesto (categoría + mes + límite) | Sí |
+| GET | `/api/v1/budgets/{id}` | Obtener un presupuesto | Sí |
+| PATCH | `/api/v1/budgets/{id}` | Ajustar el límite de un presupuesto | Sí |
+| DELETE | `/api/v1/budgets/{id}` | Eliminar un presupuesto | Sí |
+| GET | `/api/v1/reports/summary?month=YYYY-MM` | Total de ingresos, gastos y balance del mes | Sí |
+| GET | `/api/v1/reports/by-category?month=YYYY-MM` | Total por categoría, de mayor a menor (filtro opcional `type`) | Sí |
+| GET | `/api/v1/reports/budget-status?month=YYYY-MM` | Gasto vs. límite por categoría presupuestada | Sí |
 
 ## Roadmap
 

@@ -38,12 +38,18 @@ Pull Request en GitHub, para que tu historial muestre cómo trabajas.
 - [x] Migración `0003_add_users_and_owner_id`
 - [x] 11 tests nuevos (33 en total)
 
-## Etapa 3 — Presupuestos y reportes
+## Etapa 3 — Presupuestos y reportes (HECHO)
 
-- [ ] Modelo `Budget`: límite mensual por categoría
-- [ ] `GET /api/v1/reports/summary?month=YYYY-MM`: total ingresos, gastos, balance
-- [ ] `GET /api/v1/reports/by-category`: gasto agrupado por categoría
-- [ ] Alerta cuando el gasto supera el presupuesto
+- [x] Modelo `Budget`: límite mensual por categoría (único por categoría+mes+usuario,
+      `ON DELETE CASCADE` si se borra la categoría)
+- [x] CRUD `/api/v1/budgets`
+- [x] `GET /api/v1/reports/summary?month=YYYY-MM`: total ingresos, gastos, balance
+- [x] `GET /api/v1/reports/by-category?month=YYYY-MM`: total agrupado por categoría (SQL
+      `SUM`/`GROUP BY`, no en Python), filtro opcional por `type`
+- [x] `GET /api/v1/reports/budget-status?month=YYYY-MM`: gasto vs. límite por categoría,
+      con bandera `over_budget`
+- [x] Meses como texto `"YYYY-MM"` en toda la API (`app/core/dates.py`)
+- [x] 15 tests nuevos (48 en total)
 
 ## Etapa 4 — Calidad y empaquetado
 

@@ -42,6 +42,15 @@ def test_list_budgets_filtered_by_month(client, category_id):
     assert result[0]["month"] == "2026-09"
 
 
+def test_list_budgets_respects_skip_and_limit(client, category_id):
+    for i in range(3):
+        other = client.post(CAT, json={"name": f"Cat{i}"}).json()["id"]
+        client.post(BUD, json=_payload(other, limit_amount="100"))
+
+    page = client.get(BUD, params={"skip": 1, "limit": 1}).json()
+    assert len(page) == 1
+
+
 def test_update_budget_amount(client, category_id):
     budget_id = client.post(BUD, json=_payload(category_id)).json()["id"]
 

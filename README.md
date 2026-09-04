@@ -16,8 +16,9 @@ Proyecto de portafolio enfocado en buenas prácticas de backend con Python.
 | Autenticación | JWT (PyJWT) + contraseñas con bcrypt |
 | Presupuestos y reportes | Agregaciones SQL (`SUM` / `GROUP BY`) |
 | Base de datos | PostgreSQL (SQLite para desarrollo rápido) |
-| Tests | pytest |
-| Lint / formato | Ruff |
+| Tests | pytest + pytest-cov |
+| Lint / formato | Ruff + pre-commit |
+| Contenedores | Docker + docker-compose (app + PostgreSQL) |
 | CI | GitHub Actions |
 
 ## Requisitos
@@ -45,6 +46,9 @@ alembic upgrade head
 
 # 5. Arrancar el servidor
 uvicorn app.main:app --reload
+
+# 6. (opcional, recomendado) hook de git que corre el lint antes de cada commit
+pre-commit install
 ```
 
 Abre la documentación interactiva en <http://localhost:8000/docs>.
@@ -62,12 +66,26 @@ En `/docs` hay un botón **Authorize** arriba a la derecha: pega ahí el token (
 la palabra `Bearer`) y todos los endpoints protegidos quedan autenticados automáticamente
 para probarlos desde el navegador.
 
-### Usar PostgreSQL en lugar de SQLite
+### Correr todo con Docker
 
-Con Docker:
+Con Docker Desktop instalado, esto levanta la API **y** PostgreSQL, aplica las
+migraciones y deja todo listo en <http://localhost:8000/docs>:
 
 ```bash
-docker compose up -d
+docker compose up --build
+```
+
+> Nota: este Dockerfile/compose sigue las practicas estandar (imagen `slim`,
+> capas cacheables, healthcheck de la base de datos) pero no se ha podido
+> probar en esta maquina en particular por no tener Docker instalado.
+> Si algo no arranca a la primera, revisa `docker compose logs app`.
+
+### Usar PostgreSQL sin Docker (para la app, si igual quieres SQLite en la app)
+
+Si solo quieres la base de datos en Docker y correr la API tu mismo:
+
+```bash
+docker compose up db -d
 ```
 
 Luego pon en tu `.env`:
@@ -86,6 +104,12 @@ pytest
 
 Los tests usan una base de datos SQLite en memoria, aislada por test. No necesitan
 PostgreSQL ni configuración adicional.
+
+Con reporte de cobertura:
+
+```bash
+pytest --cov=app --cov-report=term-missing
+```
 
 ## Estructura del proyecto
 

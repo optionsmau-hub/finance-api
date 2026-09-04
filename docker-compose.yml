@@ -1,11 +1,15 @@
-# Levanta solo una base de datos PostgreSQL para desarrollo.
-# Requiere Docker Desktop instalado. Si no lo tienes, puedes ignorar este
-# archivo y usar SQLite (ver README) o instalar PostgreSQL directamente.
+# Levanta la API completa (app + base de datos PostgreSQL) con un comando.
+# Requiere Docker Desktop instalado.
 #
-#   docker compose up -d      # arranca la base de datos
-#   docker compose down       # la detiene
+#   docker compose up --build   # arranca todo (la primera vez, o si cambio el codigo)
+#   docker compose up -d        # arranca en segundo plano
+#   docker compose down         # lo detiene
 #
-# Luego pon en tu .env:
+# La API queda en http://localhost:8000/docs
+#
+# Si prefieres correr la API en tu maquina (fuera de Docker) pero usando
+# esta base de datos: comenta el servicio "app" de abajo, deja "db"
+# corriendo, y en tu .env pon:
 #   DATABASE_URL=postgresql+psycopg://finance:finance@localhost:5432/finance_db
 
 services:
@@ -19,6 +23,25 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finance"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://finance:finance@db:5432/finance_db
+      SECRET_KEY: dev-secret-change-me-in-production-0123456789
+    ports:
+      - "8000:8000"
+    # Aplica las migraciones y despues arranca el servidor. Se corre aqui
+    # (y no en el Dockerfile) porque necesita que "db" ya este disponible.
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
 
 volumes:
   pgdata:

@@ -23,10 +23,12 @@ def _budget_not_found() -> HTTPException:
 @router.get("", response_model=list[BudgetRead])
 def list_budgets(
     month: str | None = Query(default=None, pattern=MONTH_PATTERN),
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=100, ge=1, le=500),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return crud.list_(db, owner_id=current_user.id, month=month)
+    return crud.list_(db, owner_id=current_user.id, month=month, skip=skip, limit=limit)
 
 
 @router.post("", response_model=BudgetRead, status_code=status.HTTP_201_CREATED)

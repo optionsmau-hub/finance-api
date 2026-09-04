@@ -21,5 +21,8 @@ jobs:
       - name: Lint (ruff)
         run: ruff check .
 
-      - name: Tests (pytest)
-        run: pytest -q
+      - name: Formato (ruff format)
+        run: ruff format --check .
+
+      - name: Tests con cobertura
+        run: pytest --cov=app --cov-report=term-missing -q

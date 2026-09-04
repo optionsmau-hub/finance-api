@@ -39,9 +39,7 @@ def upgrade() -> None:
         batch_op.drop_index("ix_categories_name")
         batch_op.create_index("ix_categories_name", ["name"], unique=False)
         batch_op.create_index("ix_categories_owner_id", ["owner_id"], unique=False)
-        batch_op.create_unique_constraint(
-            "uq_categories_owner_name", ["owner_id", "name"]
-        )
+        batch_op.create_unique_constraint("uq_categories_owner_name", ["owner_id", "name"])
         batch_op.create_foreign_key(
             "fk_categories_owner_id_users",
             "users",

@@ -51,13 +51,20 @@ Pull Request en GitHub, para que tu historial muestre cómo trabajas.
 - [x] Meses como texto `"YYYY-MM"` en toda la API (`app/core/dates.py`)
 - [x] 15 tests nuevos (48 en total)
 
-## Etapa 4 — Calidad y empaquetado
+## Etapa 4 — Calidad y empaquetado (HECHO)
 
-- [ ] `pre-commit` con ruff (formato + lint automáticos)
-- [ ] Cobertura de tests con `pytest-cov` (objetivo: > 85 %)
-- [ ] `Dockerfile` de la aplicación + `docker-compose` con app + db
-- [ ] Manejo de errores centralizado y logging
-- [ ] Paginación consistente en todos los listados
+- [x] `pre-commit` con ruff (`--fix` + `ruff-format`) y hooks basicos (trailing
+      whitespace, yaml, archivos grandes). Instalado con `pre-commit install`.
+- [x] Cobertura de tests con `pytest-cov`: **96 %** (objetivo era > 85 %)
+- [x] `Dockerfile` de la aplicación + `docker-compose` con app + db (con
+      healthcheck). **No se pudo probar en esta máquina por no tener Docker
+      instalado** — revisar al desplegar.
+- [x] Manejo de errores centralizado (handler para excepciones no capturadas,
+      responde 500 generico en vez de un stack trace) y logging de cada
+      peticion (metodo, ruta, status, duracion)
+- [x] Paginación consistente: `/budgets` tambien tiene `skip`/`limit` ahora
+- [x] CI: se agrego `ruff format --check` y cobertura con `--cov-report`
+- [x] 1 test nuevo (49 en total)
 
 ## Etapa 5 — Despliegue
 

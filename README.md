@@ -98,7 +98,12 @@ tests/         Tests con pytest
 | POST | `/api/v1/categories` | Crear categoría |
 | GET | `/api/v1/categories/{id}` | Obtener una categoría |
 | PATCH | `/api/v1/categories/{id}` | Actualizar una categoría |
-| DELETE | `/api/v1/categories/{id}` | Eliminar una categoría |
+| DELETE | `/api/v1/categories/{id}` | Eliminar una categoría (409 si tiene movimientos) |
+| GET | `/api/v1/transactions` | Listar movimientos (filtros: `category_id`, `type`, `date_from`, `date_to`) |
+| POST | `/api/v1/transactions` | Registrar un ingreso o gasto |
+| GET | `/api/v1/transactions/{id}` | Obtener un movimiento |
+| PATCH | `/api/v1/transactions/{id}` | Actualizar un movimiento |
+| DELETE | `/api/v1/transactions/{id}` | Eliminar un movimiento |
 
 ## Roadmap
 

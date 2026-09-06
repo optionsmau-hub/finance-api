@@ -1,0 +1,28 @@
+# Blueprint de Render: describe como desplegar la API.
+# En Render: New > Blueprint > conecta este repo, y lee este archivo.
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: finance-api
+    runtime: python
+    plan: free # el servicio se "duerme" tras 15 min sin trafico y tarda ~1 min en despertar
+    buildCommand: pip install .
+    # Aplica migraciones y arranca. Render inyecta el puerto en $PORT.
+    startCommand: alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.10"
+      - key: DEBUG
+        value: "false"
+      # Render genera una clave aleatoria y segura automaticamente.
+      - key: SECRET_KEY
+        generateValue: true
+      # Estas se ponen a mano en el dashboard (sync: false = no van en el YAML):
+      #   DATABASE_URL -> la cadena de conexion de tu proyecto de Supabase
+      #   CORS_ORIGINS -> la URL de tu frontend cuando lo tengas
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false

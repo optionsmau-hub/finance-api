@@ -2,6 +2,9 @@
 
 Cada test corre contra una base de datos SQLite en memoria totalmente
 aislada: se crea antes del test y se destruye despues.
+
+(La variable SECRET_KEY para los tests se define en el conftest.py de la
+raiz del repo, que pytest carga antes que este.)
 """
 
 import pytest

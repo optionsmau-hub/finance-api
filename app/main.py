@@ -11,6 +11,7 @@ import time
 from collections.abc import Awaitable, Callable
 
 from fastapi import FastAPI, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.api.routes import auth, budgets, categories, reports, transactions
@@ -24,6 +25,17 @@ app = FastAPI(
     title=settings.app_name,
     version="0.1.0",
     summary="API para llevar el control de finanzas personales.",
+)
+
+# Permite que un frontend servido desde otro dominio (Streamlit, React, etc.)
+# llame a la API desde el navegador. Los origenes permitidos se configuran
+# con la variable de entorno CORS_ORIGINS.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins_list,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(auth.router, prefix="/api/v1")
@@ -62,6 +74,12 @@ async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONR
     """
     logger.exception("Error no manejado en %s %s", request.method, request.url.path)
     return JSONResponse(status_code=500, content={"detail": "Error interno del servidor"})
+
+
+@app.get("/", tags=["meta"])
+def root() -> dict[str, str]:
+    """Raiz: un saludo y el enlace a la documentacion."""
+    return {"name": settings.app_name, "docs": "/docs"}
 
 
 @app.get("/health", tags=["meta"])

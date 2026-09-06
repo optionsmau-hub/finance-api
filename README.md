@@ -1,9 +1,18 @@
 # Finance API
 
+![CI](https://github.com/optionsmau-hub/finance-api/actions/workflows/ci.yml/badge.svg)
+
 API REST para llevar el control de finanzas personales: categorías, ingresos, gastos,
 presupuestos y reportes.
 
 Proyecto de portafolio enfocado en buenas prácticas de backend con Python.
+
+<!-- Cuando la despliegues, pon aquí el enlace: -->
+<!-- **Demo en vivo:** https://finance-api-xxxx.onrender.com/docs -->
+<!-- **Demo en vivo:** https://TU-APP.onrender.com/docs -->
+
+> **Nota:** El servicio de Render en plan gratis se "duerme" tras 15 minutos sin
+> tráfico; la primera petición después de eso tarda ~1 minuto en responder.
 
 ## Stack
 
@@ -132,6 +141,7 @@ tests/         Tests con pytest
 
 | Método | Ruta | Descripción | Requiere token |
 |--------|------|-------------|:---:|
+| GET | `/` | Nombre de la API y enlace a `/docs` | No |
 | GET | `/health` | Estado del servicio | No |
 | POST | `/api/v1/auth/register` | Crear una cuenta | No |
 | POST | `/api/v1/auth/login` | Iniciar sesión, devuelve un token | No |
@@ -154,7 +164,32 @@ tests/         Tests con pytest
 | GET | `/api/v1/reports/by-category?month=YYYY-MM` | Total por categoría, de mayor a menor (filtro opcional `type`) | Sí |
 | GET | `/api/v1/reports/budget-status?month=YYYY-MM` | Gasto vs. límite por categoría presupuestada | Sí |
 
+## Despliegue (Render + Supabase)
+
+**1. Base de datos en Supabase**
+
+1. Crea una cuenta en <https://supabase.com> y un proyecto nuevo (elige una contraseña
+   para la base de datos y guárdala).
+2. En el proyecto: **Connect** (arriba) → pestaña **Connection string** → **URI**.
+   Copia la cadena; se ve así:
+   `postgresql://postgres:[PASSWORD]@db.xxxx.supabase.co:5432/postgres`
+3. Adáptala para este proyecto: cambia `postgresql://` por `postgresql+psycopg://`
+   y reemplaza `[PASSWORD]` por tu contraseña real. Esa es tu `DATABASE_URL`.
+
+**2. API en Render**
+
+1. Crea una cuenta en <https://render.com> y conéctala a tu GitHub.
+2. **New** → **Blueprint** → elige el repo `finance-api`. Render lee `render.yaml`.
+3. Te va a pedir las variables marcadas como "sync: false":
+   - `DATABASE_URL` → la cadena de Supabase del paso anterior
+   - `CORS_ORIGINS` → `*` por ahora (luego lo cambias por la URL de tu frontend)
+   - (`SECRET_KEY` la genera Render sola; `DEBUG` ya queda en `false`)
+4. **Apply**. El primer deploy corre `alembic upgrade head` y arranca el servidor.
+5. Cuando termine, tu API está en `https://finance-api-xxxx.onrender.com` — abre
+   `/docs` y prueba el flujo completo (registro → login → ...).
+
+Cada `git push` a `main` vuelve a desplegar automáticamente.
+
 ## Roadmap
 
-Ver [PLAN.md](PLAN.md) para las siguientes etapas (transacciones, autenticación con JWT,
-presupuestos, reportes, Docker y despliegue).
+Ver [PLAN.md](PLAN.md). Backend completo; lo que sigue es un frontend (Streamlit o React).

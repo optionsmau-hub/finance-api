@@ -66,11 +66,20 @@ Pull Request en GitHub, para que tu historial muestre cómo trabajas.
 - [x] CI: se agrego `ruff format --check` y cobertura con `--cov-report`
 - [x] 1 test nuevo (49 en total)
 
-## Etapa 5 — Despliegue
+## Etapa 5 — Despliegue (preparado; falta el clic final del usuario)
 
-- [ ] Desplegar en Render / Railway / Fly.io (capa gratuita)
-- [ ] Variables de entorno de producción
-- [ ] Badge de CI y enlace a la demo en el README
+- [x] `render.yaml` (Blueprint): build, `alembic upgrade head` en el arranque,
+      health check, `SECRET_KEY` autogenerada, `DATABASE_URL`/`CORS_ORIGINS` a mano
+- [x] Middleware CORS configurable por `CORS_ORIGINS` (para que un frontend pueda llamar)
+- [x] La app se niega a arrancar en producción (`DEBUG=false`) si sigue con la
+      `SECRET_KEY` de desarrollo
+- [x] Endpoint raíz `/` (para que la URL base no sea un 404)
+- [x] Badge de CI en el README + guía paso a paso de despliegue (Render + Supabase)
+- [x] `conftest.py` en la raíz: fija `SECRET_KEY` de test para que CI/clones sin `.env`
+      puedan importar la app
+- [x] 6 tests nuevos (55 en total)
+- [ ] **Pendiente (lo hace el usuario):** crear proyecto en Supabase, crear el
+      Blueprint en Render con las variables, y pegar la URL de la demo en el README
 
 ---
 

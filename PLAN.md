@@ -78,8 +78,8 @@ Pull Request en GitHub, para que tu historial muestre cómo trabajas.
 - [x] `conftest.py` en la raíz: fija `SECRET_KEY` de test para que CI/clones sin `.env`
       puedan importar la app
 - [x] 6 tests nuevos (55 en total)
-- [ ] **Pendiente (lo hace el usuario):** crear proyecto en Supabase, crear el
-      Blueprint en Render con las variables, y pegar la URL de la demo en el README
+- [x] Desplegado: base en Supabase (session pooler), API en Render (Blueprint).
+      Demo: https://finance-api-xgg1.onrender.com/docs — probado end-to-end el 2026-09-06.
 
 ---
 

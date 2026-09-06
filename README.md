@@ -7,11 +7,9 @@ presupuestos y reportes.
 
 Proyecto de portafolio enfocado en buenas prácticas de backend con Python.
 
-<!-- Cuando la despliegues, pon aquí el enlace: -->
-<!-- **Demo en vivo:** https://finance-api-xxxx.onrender.com/docs -->
-<!-- **Demo en vivo:** https://TU-APP.onrender.com/docs -->
+**Demo en vivo:** <https://finance-api-xgg1.onrender.com/docs>
 
-> **Nota:** El servicio de Render en plan gratis se "duerme" tras 15 minutos sin
+> **Nota:** El servicio de Render en plan gratis se "duerme" tras ~15 minutos sin
 > tráfico; la primera petición después de eso tarda ~1 minuto en responder.
 
 ## Stack
